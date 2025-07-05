@@ -4,12 +4,11 @@ import com.recime.challenge.dto.IngredientDTO;
 import com.recime.challenge.entity.Ingredient;
 import org.mapstruct.Mapper;
 
+/**
+ * Ingredient Mapper
+ */
 @Mapper(componentModel = "spring")
 public interface IngredientMapper {
-
-
-    Ingredient toEntity(IngredientDTO dto);
-    IngredientDTO toDTO(Ingredient entity);
 
     Ingredient toIngredient(Long id);
 

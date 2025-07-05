@@ -1,10 +1,11 @@
 package com.recime.challenge.dto;
 
-
 import lombok.Data;
-
 import java.util.List;
 
+/**
+ * Recipe Filter Parameters Data Transfer Object
+ */
 @Data
 public class RecipeFilterParamsDTO {
     private Boolean vegetarian;

@@ -63,8 +63,7 @@ public class RecipeController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(recipe);
-    }//TODO: deberia devolver el id?
-
+    }
 
     /**
      * Update existing recipe
