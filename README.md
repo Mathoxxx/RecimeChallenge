@@ -24,5 +24,16 @@ The challenge is about creating a RESTful API for managing recipes, built with
 
 1. **Clone the repo**
 
-```bash
 git clone https://github.com/Mathoxxx/RecimeChallenge.git
+
+2. **Database setup** -
+Connect to PostgreSQL and run:
+
+CREATE DATABASE postgres;
+
+CREATE USER postgres WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE postgres TO postgres;
+
+3. **Service run**
+
+Now we can run the application, once it is up we can observe the operations it exposes on http://localhost:8080/swagger-ui/index.html
