@@ -11,7 +11,6 @@ The challenge is about creating a RESTful API for managing recipes, built with
 - Filter parameters for retrieving recipes
 - DTO mapping with MapStruct
 - Default swagger by springdoc
-- Proper HTTP status handling (e.g. `404 Not Found`, `201 Created`)
 - JSON request/response
 
 ###  Prerequisites
@@ -58,8 +57,6 @@ Instead of exposing JPA entities directly, I use Data Transfer Objects (DTOs) an
 
 -Ensure clean API contracts.
 
--Improve performance by avoiding lazy-loading issues in JSON serialization.
-
 MapStruct was chosen for its compile-time performance and clean syntax.
 
 _**Swagger / OpenAPI Documentation:**_
@@ -67,30 +64,16 @@ The project integrates Springdoc OpenAPI to provide a live, interactive API docu
 
 _**Entities Design:**_
 
--The Recipe entity models the core concept of a cooking recipe. It was designed with clarity, usability, and future extensibility in mind.
+-The Recipe entity models the core concept of a cooking recipe. It was designed for clarity, usability, and future extensibility in mind.
 Represent real-world recipe data (name, instructions, ingredients)
 Ensure a normalized, relational structure (e.g. link to Ingredient entity)
-Allow future expansion (e.g. tags, ratings, difficulty, cook time).
 
 -The Ingredient entity represents a unique item that can be used in multiple recipes. It was designed to support a normalized schema and allow reuse across the database.
-This approach prevents duplication (e.g., “Sugar” appearing multiple times) and enables features like ingredient management or tagging in the future.
+This approach prevents duplication (e.g., “Sugar” appearing multiple times).
 
 Relationship with Recipes
 The Ingredient entity is connected to Recipe indirectly via the join entity RecipeIngredient. This allows:
 One ingredient to be reused in multiple recipes
 Tracking amount and units per recipe use
 
-Keeps ingredients normalized
-
-Avoids name duplication in the database
-
-Enables future features like filtering recipes by ingredient or nutrition data
-
-
-Recipe (1) ────< RecipeIngredient >──── (1) Ingredient
-
-Reusability: Ingredients are shared across recipes without duplication
-
-Normalization: Clean relational model that avoids redundant data
-
-Extendable: You can add fields later (e.g., calories, allergens, categories) without affecting core logic
+It also helps to keep ingredients normalized, avoid name duplication in the database and enables future features like filtering recipes by ingredient
