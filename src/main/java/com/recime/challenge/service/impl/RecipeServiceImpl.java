@@ -20,8 +20,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
 
+/**
+ * Recipe Service Implementation
+ */
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
@@ -29,6 +31,12 @@ public class RecipeServiceImpl implements RecipeService {
     private final IngredientRepository ingredientRepository;
     private final RecipeMapper recipeMapper;
 
+    /**
+     * Class constructor
+     * @param repository recipeRepository
+     * @param ingredientRepository ingredientRepository
+     * @param recipeMapper recipeMapper
+     */
     public RecipeServiceImpl(final RecipeRepository repository,
                              final IngredientRepository ingredientRepository,
                              final RecipeMapper recipeMapper){
@@ -37,6 +45,11 @@ public class RecipeServiceImpl implements RecipeService {
         this.recipeMapper = recipeMapper;
     }
 
+    /**
+     * Create a new recipe function
+     * @param recipeDTO     new recipe object
+     * @return created recipe
+     */
     @Override
     public RecipeDTO createRecipe(RecipeRequestDTO recipeDTO) {
         final Recipe recipe = recipeMapper.toEntity(recipeDTO);
@@ -57,11 +70,21 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeMapper.toDTO(saved);
     }
 
+    /**
+     * Retrieve all recipes
+     * @return list of all recipes
+     */
+
     @Override
     public List<RecipeDTO> getAllRecipes() {
         return recipeMapper.toDTOs(recipeRepository.findAll());
     }
 
+    /**
+     * REtrieve recipe by identifier
+     * @param id            recipe identifier
+     * @return RecipeDTO
+     */
     @Override
     public Optional<RecipeDTO> getRecipeById(Long id) {
         Optional<Recipe> recipe = recipeRepository.findById(id);
@@ -69,6 +92,12 @@ public class RecipeServiceImpl implements RecipeService {
         //TODO THROW A 404 WHEN NO RECIPE IS FOUND
     }
 
+    /**
+     * Update recipe method
+     * @param id            recipe identifier
+     * @param recipeDTO     new recipe params
+     * @return modified recipe
+     */
     @Override
     public RecipeDTO updateRecipe(Long id, RecipeRequestDTO recipeDTO) {
         Recipe existingRecipe = recipeRepository.findById(id)
@@ -99,6 +128,10 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeMapper.toDTO(modifiedRecipe);
     }
 
+    /**
+     * Delete recipe method
+     * @param id            recipe identifier
+     */
     @Override
     public void deleteRecipe(Long id) {
         if (!recipeRepository.existsById(id)) {
@@ -125,7 +158,11 @@ public class RecipeServiceImpl implements RecipeService {
                 .collect(Collectors.toList()));
     }
 
-
+    /**
+     * Validate if a recipe is vegetarian
+     * @param recipe RecipeEntity
+     * @return true/false
+     */
     private boolean isVegetarian(Recipe recipe) {
         for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {
             if(!recipeIngredient.getIngredient().isVegetarian()) return false;
@@ -133,6 +170,12 @@ public class RecipeServiceImpl implements RecipeService {
         return true;
     }
 
+    /**
+     * Validates if recipe has certain ingredients
+     * @param recipe RecipeEntity
+     * @param includeIngredientIds ids of ingredients
+     * @return true/false
+     */
     private boolean matchesIncludeIngredients(Recipe recipe, List<Long> includeIngredientIds) {
         if (includeIngredientIds == null || includeIngredientIds.isEmpty()) return true;
 
@@ -143,6 +186,12 @@ public class RecipeServiceImpl implements RecipeService {
         return ingredientIds.containsAll(includeIngredientIds);
     }
 
+    /**
+     * Validates if recipe doesn't have certain ingredients
+     * @param recipe RecipeEntity
+     * @param excludeIngredientIds ids of ingredients
+     * @return true/false
+     */
     private boolean matchesExcludeIngredients(Recipe recipe, List<Long> excludeIngredientIds) {
         if (excludeIngredientIds == null || excludeIngredientIds.isEmpty()) return true;
 
@@ -152,6 +201,13 @@ public class RecipeServiceImpl implements RecipeService {
 
         return Collections.disjoint(ingredientIds, excludeIngredientIds);
     }
+
+    /**
+     * Validates if recipe name or instructions contain contentSearch
+     * @param recipe RecipeEntity
+     * @param contentSearch content
+     * @return true/false
+     */
 
     private boolean matchesContentSearch(Recipe recipe, String contentSearch) {
         return contentSearch == null ||
