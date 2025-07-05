@@ -1,5 +1,6 @@
 package com.recime.challenge.service.impl;
 
+import com.recime.challenge.dto.RecipeFilterParamsDTO;
 import com.recime.challenge.dto.RecipeIngredientDTO;
 import com.recime.challenge.dto.RecipeRequestDTO;
 import com.recime.challenge.dto.RecipeDTO;
@@ -13,9 +14,11 @@ import com.recime.challenge.repository.RecipeRepository;
 import com.recime.challenge.service.RecipeService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
@@ -69,7 +72,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public RecipeDTO updateRecipe(Long id, RecipeRequestDTO recipeDTO) {
         Recipe existingRecipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recipe not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not found, id: " + id));
         //TODO THROW A 404 WHEN NO RECIPE IS FOUND
 
         // Replace all fields
@@ -79,10 +82,9 @@ public class RecipeServiceImpl implements RecipeService {
         existingRecipe.setDescription(recipeDTO.getDescription());
 
         existingRecipe.getIngredients().clear();
-
         for (RecipeIngredientDTO ingredientDTO : recipeDTO.getIngredients()) {
             Ingredient ingredient = ingredientRepository.findById(ingredientDTO.getIngredientId())
-                    .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Recipe not found, id: " + ingredientDTO.getIngredientId()));
 
             RecipeIngredient ri = new RecipeIngredient();
             ri.setIngredient(ingredient);
@@ -105,7 +107,55 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepository.deleteById(id);
     }
 
+    /**
+     * filterRecipes implementation
+     * @param filters recipe filters
+     * @return filtered list of recipes
+     */
+    @Override
+    public List<RecipeDTO> filterRecipes(RecipeFilterParamsDTO filters){
+        List<Recipe> allRecipes = recipeRepository.findAll();
+        return recipeMapper.toDTOs(allRecipes.stream()
+                .filter(r -> filters.getVegetarian() == null || r.isVegetarian() == filters.getVegetarian())
+                .filter(r -> filters.getMinServings() == null || r.getServings() >= filters.getMinServings())
+                .filter(r -> filters.getMaxServings() == null || r.getServings() <= filters.getMaxServings())
+                .filter(r -> matchesContentSearch(r, filters.getContentSearch()))
+                .filter(r -> matchesIncludeIngredients(r, filters.getIncludeIngredientsIds()))
+                .filter(r -> matchesExcludeIngredients(r, filters.getExcludeIngredientsIds()))
+                .collect(Collectors.toList()));
+    }
+
+
     private boolean isVegetarian(Recipe recipe) {
+        for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {
+            if(!recipeIngredient.getIngredient().isVegetarian()) return false;
+        }
         return true;
+    }
+
+    private boolean matchesIncludeIngredients(Recipe recipe, List<Long> includeIngredientIds) {
+        if (includeIngredientIds == null || includeIngredientIds.isEmpty()) return true;
+
+        Set<Long> ingredientIds = recipe.getIngredients().stream()
+                .map(ri -> ri.getIngredient().getId())
+                .collect(Collectors.toSet());
+
+        return ingredientIds.containsAll(includeIngredientIds);
+    }
+
+    private boolean matchesExcludeIngredients(Recipe recipe, List<Long> excludeIngredientIds) {
+        if (excludeIngredientIds == null || excludeIngredientIds.isEmpty()) return true;
+
+        Set<Long> ingredientIds = recipe.getIngredients().stream()
+                .map(ri -> ri.getIngredient().getId())  // Assuming Ingredient has getId() method
+                .collect(Collectors.toSet());
+
+        return Collections.disjoint(ingredientIds, excludeIngredientIds);
+    }
+
+    private boolean matchesContentSearch(Recipe recipe, String contentSearch) {
+        return contentSearch == null ||
+                recipe.getName().toLowerCase().contains(contentSearch.toLowerCase()) ||
+                recipe.getInstructions().toLowerCase().contains(contentSearch.toLowerCase());
     }
 }

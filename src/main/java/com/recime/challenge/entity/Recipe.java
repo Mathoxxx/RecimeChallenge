@@ -20,7 +20,6 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> ingredients;
     private Integer servings;
-    @ElementCollection
-    private List<String> instructions;
+    private String instructions;
     //private Long photo;
 }

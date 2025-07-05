@@ -1,5 +1,6 @@
 package com.recime.challenge.controller;
 
+import com.recime.challenge.dto.RecipeFilterParamsDTO;
 import com.recime.challenge.dto.RecipeRequestDTO;
 import com.recime.challenge.dto.RecipeDTO;
 import com.recime.challenge.service.impl.RecipeServiceImpl;
@@ -92,6 +93,17 @@ public class RecipeController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * Filter operation
+     * @param filters filter parameters
+     * @return ResponseEntity with OK or NOT FOUND
+     */
+    @PostMapping("/filter")
+    public ResponseEntity<List<RecipeDTO>> filterRecipes(@RequestBody RecipeFilterParamsDTO filters) {
+        List<RecipeDTO> result = recipeService.filterRecipes(filters);
+        return ResponseEntity.ok(result);
     }
 
 

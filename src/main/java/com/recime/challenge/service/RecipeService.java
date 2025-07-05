@@ -1,5 +1,6 @@
 package com.recime.challenge.service;
 
+import com.recime.challenge.dto.RecipeFilterParamsDTO;
 import com.recime.challenge.dto.RecipeRequestDTO;
 import com.recime.challenge.dto.RecipeDTO;
 
@@ -45,4 +46,6 @@ public interface RecipeService {
      * @param id            recipe identifier
      */
     public void deleteRecipe(Long id);
+
+    public List<RecipeDTO> filterRecipes(RecipeFilterParamsDTO filters);
 }

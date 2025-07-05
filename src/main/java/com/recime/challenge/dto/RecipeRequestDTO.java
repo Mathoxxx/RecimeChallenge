@@ -16,6 +16,6 @@ public class RecipeRequestDTO {
     private String description;
     private Integer servings;
     private List<RecipeIngredientDTO> ingredients;
-    private List<String> instructions;
+    private String instructions;
     //TODO: falta foto
 }
