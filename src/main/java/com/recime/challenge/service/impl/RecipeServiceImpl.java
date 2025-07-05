@@ -2,7 +2,10 @@ package com.recime.challenge.service.impl;
 
 import com.recime.challenge.dto.CreateRecipeRequestDTO;
 import com.recime.challenge.dto.RecipeDTO;
+import com.recime.challenge.dto.RecipeIngredientDTO;
+import com.recime.challenge.entity.Ingredient;
 import com.recime.challenge.entity.Recipe;
+import com.recime.challenge.entity.RecipeIngredient;
 import com.recime.challenge.error.ResourceNotFoundException;
 import com.recime.challenge.mapper.RecipeMapper;
 import com.recime.challenge.repository.IngredientRepository;
@@ -10,6 +13,7 @@ import com.recime.challenge.repository.RecipeRepository;
 import com.recime.challenge.service.RecipeService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,8 +36,21 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public RecipeDTO createRecipe(CreateRecipeRequestDTO recipeDTO) {
-        final Recipe recipe = recipeMapper.toEntity(recipeDTO, ingredientRepository);
+        List<RecipeIngredient> recipeIngredients = new ArrayList<>();
+        final Recipe recipe = recipeMapper.toEntity(recipeDTO);
 
+
+        // Set the Recipe reference and Ingredient for each RecipeIngredient
+        for (RecipeIngredient ri : recipe.getIngredients()) {
+            Long ingredientId = ri.getIngredient().getId(); // This was passed from DTO
+            // Fetch the Ingredient entity from the DB using the ingredientId from RecipeIngredientDTO
+            Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                    .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+
+            ri.setIngredient(ingredient);  // ✅ This is now a managed entity
+            ri.setRecipe(recipe);          // Also set the owning side
+
+        }
 
         recipe.setVegetarian(isVegetarian(recipe));
 
