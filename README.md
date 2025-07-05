@@ -37,3 +37,4 @@ GRANT ALL PRIVILEGES ON DATABASE postgres TO postgres;
 3. **Service run**
 
 Now we can run the application, once it is up we can observe the operations it exposes on http://localhost:8080/swagger-ui/index.html
+![image](https://github.com/user-attachments/assets/92102c23-138f-44f7-a897-03caa06f0262)
