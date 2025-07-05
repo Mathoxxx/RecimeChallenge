@@ -1,9 +1,11 @@
 package com.recime.challenge.service.impl;
 
+import com.recime.challenge.dto.CreateRecipeRequestDTO;
 import com.recime.challenge.dto.RecipeDTO;
 import com.recime.challenge.entity.Recipe;
 import com.recime.challenge.error.ResourceNotFoundException;
 import com.recime.challenge.mapper.RecipeMapper;
+import com.recime.challenge.repository.IngredientRepository;
 import com.recime.challenge.repository.RecipeRepository;
 import com.recime.challenge.service.RecipeService;
 import org.springframework.stereotype.Service;
@@ -17,16 +19,20 @@ import static java.util.Arrays.stream;
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final IngredientRepository ingredientRepository;
     private final RecipeMapper recipeMapper;
 
-    public RecipeServiceImpl(final RecipeRepository repository, final RecipeMapper recipeMapper){
+    public RecipeServiceImpl(final RecipeRepository repository,
+                             final IngredientRepository ingredientRepository,
+                             final RecipeMapper recipeMapper){
         this.recipeRepository = repository;
+        this.ingredientRepository = ingredientRepository;
         this.recipeMapper = recipeMapper;
     }
 
     @Override
-    public RecipeDTO createRecipe(RecipeDTO recipeDTO) {
-        final Recipe recipe = recipeMapper.toEntity(recipeDTO);
+    public RecipeDTO createRecipe(CreateRecipeRequestDTO recipeDTO) {
+        final Recipe recipe = recipeMapper.toEntity(recipeDTO, ingredientRepository);
 
 
         recipe.setVegetarian(isVegetarian(recipe));

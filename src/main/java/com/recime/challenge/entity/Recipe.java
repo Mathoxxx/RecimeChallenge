@@ -13,7 +13,7 @@ public class Recipe {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private String recipeId;
+    private Long recipeId;
     private String name;
     private boolean vegetarian;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)

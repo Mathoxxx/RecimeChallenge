@@ -1,5 +1,6 @@
 package com.recime.challenge.service;
 
+import com.recime.challenge.dto.CreateRecipeRequestDTO;
 import com.recime.challenge.dto.RecipeDTO;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface RecipeService {
      * @param recipeDTO     new recipe object
      * @return              RecipeDTO
      */
-    public RecipeDTO createRecipe(RecipeDTO recipeDTO);
+    public RecipeDTO createRecipe(CreateRecipeRequestDTO recipeDTO);
 
     /**
      * Retrieve recipe by identifier

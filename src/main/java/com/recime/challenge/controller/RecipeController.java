@@ -61,7 +61,7 @@ public class RecipeController {
 
     @PostMapping("")
     public ResponseEntity<RecipeDTO> addRecipe(@RequestBody CreateRecipeRequestDTO requestDTO) {
-        final RecipeDTO recipe = recipeService.createRecipe(recipeMapper.toRecipeDTO(requestDTO));
+        final RecipeDTO recipe = recipeService.createRecipe(requestDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(recipe);

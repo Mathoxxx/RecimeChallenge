@@ -1,9 +1,6 @@
 package com.recime.challenge.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,9 +14,11 @@ public class RecipeIngredient {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
     @ManyToOne
+    @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
 
     private String quantity;
