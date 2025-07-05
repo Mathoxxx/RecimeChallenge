@@ -1,7 +1,9 @@
 package com.recime.challenge.service;
 
-import com.recime.challenge.dto.CreateRecipeRequestDTO;
+import com.recime.challenge.dto.RecipeFilterParamsDTO;
+import com.recime.challenge.dto.RecipeRequestDTO;
 import com.recime.challenge.dto.RecipeDTO;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +17,7 @@ public interface RecipeService {
      * @param recipeDTO     new recipe object
      * @return              RecipeDTO
      */
-    public RecipeDTO createRecipe(CreateRecipeRequestDTO recipeDTO);
+    public RecipeDTO createRecipe(RecipeRequestDTO recipeDTO);
 
     /**
      * Retrieve recipe by identifier
@@ -36,7 +38,7 @@ public interface RecipeService {
      * @param recipeDTO     new recipe params
      * @return RecipeDTO    modified recipe
      */
-    public RecipeDTO updateRecipe(Long id, RecipeDTO recipeDTO);
+    public RecipeDTO updateRecipe(Long id, RecipeRequestDTO recipeDTO);
 
 
     /**
@@ -44,4 +46,6 @@ public interface RecipeService {
      * @param id            recipe identifier
      */
     public void deleteRecipe(Long id);
+
+    public List<RecipeDTO> filterRecipes(RecipeFilterParamsDTO filters);
 }

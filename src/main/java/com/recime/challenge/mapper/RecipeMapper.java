@@ -1,28 +1,35 @@
 package com.recime.challenge.mapper;
 
-import com.recime.challenge.dto.CreateRecipeRequestDTO;
-import com.recime.challenge.dto.RecipeDTO;
-import com.recime.challenge.dto.RecipeIngredientDTO;
-import com.recime.challenge.entity.Ingredient;
+import com.recime.challenge.dto.*;
 import com.recime.challenge.entity.Recipe;
 import com.recime.challenge.entity.RecipeIngredient;
-import com.recime.challenge.repository.IngredientRepository;
 import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = { IngredientMapper.class })
+@Mapper(componentModel = "spring", uses = IngredientMapper.class)
 public interface RecipeMapper {
 
-    // DTO → Entity (for creating a new recipe)
-    RecipeDTO toRecipeDTO(CreateRecipeRequestDTO dto);
-
-    Recipe toEntity(CreateRecipeRequestDTO dto, @Context IngredientRepository ingredientRepository);
+    Recipe toEntity(RecipeRequestDTO dto);
     Recipe toEntity(RecipeDTO dto);
 
     RecipeDTO toDTO(Recipe recipe);
 
     List<RecipeDTO> toDTOs(List<Recipe> recipes);
+
+    // From RecipeIngredient to DTO
+    @Mapping(target = "id", source = "ingredient.id")
+    @Mapping(target = "name", source = "ingredient.name")
+    @Mapping(target = "isVegetarian", source = "ingredient.vegetarian")
+    IngredientDTO toIngredientDTO(RecipeIngredient recipeIngredient);
+
+    @IterableMapping(qualifiedByName = "toRecipeIngredient")
+    List<RecipeIngredient> toRecipeIngredients(List<RecipeIngredientDTO> ingredientDTOs);
+
+    @Named("toRecipeIngredient")
+    @Mapping(target = "ingredient", source = "ingredientId")
+    @Mapping(target = "quantity", source = "quantity")
+    RecipeIngredient toRecipeIngredient(RecipeIngredientDTO dto);
 
     @AfterMapping
     default void setBackReferences(@MappingTarget Recipe recipe) {
@@ -31,13 +38,6 @@ public interface RecipeMapper {
                 ri.setRecipe(recipe);
             }
         }
-    }
-
-    RecipeIngredient toEntity(RecipeIngredientDTO dto, @Context IngredientRepository ingredientRepository);
-
-    default Ingredient map(Long id, @Context IngredientRepository ingredientRepository) {
-        return ingredientRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ingredient ID not found: " + id));
     }
 
 }

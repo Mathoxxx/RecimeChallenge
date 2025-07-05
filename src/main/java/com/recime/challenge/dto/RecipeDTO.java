@@ -18,5 +18,5 @@ public class RecipeDTO {
     private Integer servings;
     private boolean vegetarian; //TODO calculate field
     private List<IngredientDTO> ingredients;
-    private List<String> instructions;
+    private String instructions;
 }
