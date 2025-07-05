@@ -1,8 +1,8 @@
 package com.recime.challenge.service.impl;
 
-import com.recime.challenge.dto.CreateRecipeRequestDTO;
-import com.recime.challenge.dto.RecipeDTO;
 import com.recime.challenge.dto.RecipeIngredientDTO;
+import com.recime.challenge.dto.RecipeRequestDTO;
+import com.recime.challenge.dto.RecipeDTO;
 import com.recime.challenge.entity.Ingredient;
 import com.recime.challenge.entity.Recipe;
 import com.recime.challenge.entity.RecipeIngredient;
@@ -35,8 +35,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeDTO createRecipe(CreateRecipeRequestDTO recipeDTO) {
-        List<RecipeIngredient> recipeIngredients = new ArrayList<>();
+    public RecipeDTO createRecipe(RecipeRequestDTO recipeDTO) {
         final Recipe recipe = recipeMapper.toEntity(recipeDTO);
 
         for (RecipeIngredient ri : recipe.getIngredients()) {
@@ -68,9 +67,34 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeDTO updateRecipe(Long id, RecipeDTO recipeDTO) {
-        Recipe recipe = recipeMapper.toEntity(recipeDTO);
-        return recipeMapper.toDTO(recipeRepository.save(recipe));
+    public RecipeDTO updateRecipe(Long id, RecipeRequestDTO recipeDTO) {
+        Recipe existingRecipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Recipe not found"));
+        //TODO THROW A 404 WHEN NO RECIPE IS FOUND
+
+        // Replace all fields
+        existingRecipe.setName(recipeDTO.getName());
+        existingRecipe.setServings(recipeDTO.getServings());
+        existingRecipe.setInstructions(recipeDTO.getInstructions());
+        existingRecipe.setDescription(recipeDTO.getDescription());
+
+        existingRecipe.getIngredients().clear();
+
+        for (RecipeIngredientDTO ingredientDTO : recipeDTO.getIngredients()) {
+            Ingredient ingredient = ingredientRepository.findById(ingredientDTO.getIngredientId())
+                    .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+
+            RecipeIngredient ri = new RecipeIngredient();
+            ri.setIngredient(ingredient);
+            ri.setQuantity(ingredientDTO.getQuantity());
+            ri.setRecipe(existingRecipe);
+            existingRecipe.getIngredients().add(ri);
+        }
+
+        existingRecipe.setVegetarian(isVegetarian(existingRecipe));
+        Recipe modifiedRecipe = recipeRepository.save(existingRecipe);
+
+        return recipeMapper.toDTO(modifiedRecipe);
     }
 
     @Override

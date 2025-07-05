@@ -1,13 +1,8 @@
 package com.recime.challenge.mapper;
 
-import com.recime.challenge.dto.CreateRecipeRequestDTO;
-import com.recime.challenge.dto.IngredientDTO;
-import com.recime.challenge.dto.RecipeDTO;
-import com.recime.challenge.dto.RecipeIngredientDTO;
-import com.recime.challenge.entity.Ingredient;
+import com.recime.challenge.dto.*;
 import com.recime.challenge.entity.Recipe;
 import com.recime.challenge.entity.RecipeIngredient;
-import com.recime.challenge.repository.IngredientRepository;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -15,7 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = IngredientMapper.class)
 public interface RecipeMapper {
 
-    Recipe toEntity(CreateRecipeRequestDTO dto);
+    Recipe toEntity(RecipeRequestDTO dto);
     Recipe toEntity(RecipeDTO dto);
 
     RecipeDTO toDTO(Recipe recipe);

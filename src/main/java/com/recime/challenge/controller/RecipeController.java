@@ -1,8 +1,7 @@
 package com.recime.challenge.controller;
 
-import com.recime.challenge.dto.CreateRecipeRequestDTO;
+import com.recime.challenge.dto.RecipeRequestDTO;
 import com.recime.challenge.dto.RecipeDTO;
-import com.recime.challenge.mapper.RecipeMapper;
 import com.recime.challenge.service.impl.RecipeServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +19,13 @@ import java.util.Optional;
 public class RecipeController {
 
     private final RecipeServiceImpl recipeService;
-    private final RecipeMapper recipeMapper;
 
     /**
      * Constructor
      * @param recipeService the service layer for basic operations on recipes
      */
-    public RecipeController(final RecipeServiceImpl recipeService, RecipeMapper recipeMapper){
+    public RecipeController(final RecipeServiceImpl recipeService){
         this.recipeService = recipeService;
-        this.recipeMapper = recipeMapper;
     }
 
     /**
@@ -60,7 +57,7 @@ public class RecipeController {
      */
 
     @PostMapping("")
-    public ResponseEntity<RecipeDTO> addRecipe(@RequestBody CreateRecipeRequestDTO requestDTO) {
+    public ResponseEntity<RecipeDTO> addRecipe(@RequestBody RecipeRequestDTO requestDTO) {
         final RecipeDTO recipe = recipeService.createRecipe(requestDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -74,8 +71,8 @@ public class RecipeController {
      * @param recipeDTO recipe object
      * @return modified recipe or NOT FOUND
      */
-    @PatchMapping("/{id}")
-    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {
+    @PutMapping("/{id}")
+    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeRequestDTO recipeDTO) {
         final RecipeDTO recipe = recipeService.updateRecipe(id, recipeDTO);
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
