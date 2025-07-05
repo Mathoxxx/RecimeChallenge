@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IngredientDTO {
+public class RecipeIngredientDTO {
     private Long id;
-    private String name;
-    private boolean isVegetarian;
+    private IngredientDTO ingredient;
+    private String quantity;
 }

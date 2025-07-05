@@ -11,12 +11,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipeDTO {
-    private Long recipeId;
+public class CreateRecipeRequestDTO {
     private String name;
     private String description;
     private Integer servings;
-    private boolean vegetarian; //TODO calculate field
     private List<IngredientDTO> ingredients;
     private List<String> instructions;
+    //TODO: falta foto
 }

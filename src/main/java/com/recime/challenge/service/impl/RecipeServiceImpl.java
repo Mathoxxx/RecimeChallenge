@@ -1,45 +1,68 @@
 package com.recime.challenge.service.impl;
 
 import com.recime.challenge.dto.RecipeDTO;
+import com.recime.challenge.entity.Recipe;
+import com.recime.challenge.error.ResourceNotFoundException;
+import com.recime.challenge.mapper.RecipeMapper;
 import com.recime.challenge.repository.RecipeRepository;
 import com.recime.challenge.service.RecipeService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
+import static java.util.Arrays.stream;
+
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
-    private final RecipeRepository repository;
+    private final RecipeRepository recipeRepository;
+    private final RecipeMapper recipeMapper;
+
+    public RecipeServiceImpl(final RecipeRepository repository, final RecipeMapper recipeMapper){
+        this.recipeRepository = repository;
+        this.recipeMapper = recipeMapper;
+    }
 
     @Override
-    public RecipeDTO createRecipe(RecipeDTO recipe) {
-        return repository.save(recipe);
+    public RecipeDTO createRecipe(RecipeDTO recipeDTO) {
+        final Recipe recipe = recipeMapper.toEntity(recipeDTO);
+
+
+        recipe.setVegetarian(isVegetarian(recipe));
+
+        Recipe saved = recipeRepository.save(recipe);
+
+        return recipeMapper.toDTO(saved);
     }
 
     @Override
     public List<RecipeDTO> getAllRecipes() {
-        return repository.findAll();
+        return recipeMapper.toDTOs(recipeRepository.findAll());
     }
 
     @Override
     public Optional<RecipeDTO> getRecipeById(Long id) {
-        return repository.findById(id);
+        Optional<Recipe> recipe = recipeRepository.findById(id);
+        return recipe.map(recipeMapper::toDTO);
+        //TODO THROW A 404 WHEN NO RECIPE IS FOUND
     }
 
     @Override
-    public RecipeDTO updateRecipe(Long id, RecipeDTO recipe) {
-        return repository.save(recipe);
+    public RecipeDTO updateRecipe(Long id, RecipeDTO recipeDTO) {
+        Recipe recipe = recipeMapper.toEntity(recipeDTO);
+        return recipeMapper.toDTO(recipeRepository.save(recipe));
     }
 
     @Override
     public void deleteRecipe(Long id) {
-        if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException("Recipe not found with id: " + id);
+        if (!recipeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Recipe not found, id: " + id);
         }
-        repository.deleteById(id);
+        recipeRepository.deleteById(id);
+    }
+
+    private boolean isVegetarian(Recipe recipe) {
+        return true;
     }
 }
