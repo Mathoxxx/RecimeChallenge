@@ -39,17 +39,13 @@ public class RecipeServiceImpl implements RecipeService {
         List<RecipeIngredient> recipeIngredients = new ArrayList<>();
         final Recipe recipe = recipeMapper.toEntity(recipeDTO);
 
-
-        // Set the Recipe reference and Ingredient for each RecipeIngredient
         for (RecipeIngredient ri : recipe.getIngredients()) {
-            Long ingredientId = ri.getIngredient().getId(); // This was passed from DTO
-            // Fetch the Ingredient entity from the DB using the ingredientId from RecipeIngredientDTO
+            Long ingredientId = ri.getIngredient().getId();
             Ingredient ingredient = ingredientRepository.findById(ingredientId)
                     .orElseThrow(() -> new RuntimeException("Ingredient not found"));
 
-            ri.setIngredient(ingredient);  // ✅ This is now a managed entity
-            ri.setRecipe(recipe);          // Also set the owning side
-
+            ri.setIngredient(ingredient);
+            ri.setRecipe(recipe);
         }
 
         recipe.setVegetarian(isVegetarian(recipe));

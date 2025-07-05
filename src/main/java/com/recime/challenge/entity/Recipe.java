@@ -15,6 +15,7 @@ public class Recipe {
     @Id
     private Long recipeId;
     private String name;
+    private String description;
     private boolean vegetarian;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> ingredients;
