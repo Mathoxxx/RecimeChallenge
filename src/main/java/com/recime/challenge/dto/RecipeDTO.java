@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Recipe Data Transfer Object
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,7 +19,7 @@ public class RecipeDTO {
     private String name;
     private String description;
     private Integer servings;
-    private boolean vegetarian; //TODO calculate field
+    private boolean vegetarian;
     private List<IngredientDTO> ingredients;
     private String instructions;
 }

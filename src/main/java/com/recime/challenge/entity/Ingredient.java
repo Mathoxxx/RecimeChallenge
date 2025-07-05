@@ -5,6 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+/**
+ * Ingredient Entity
+ */
 @Entity
 @Data
 public class Ingredient {

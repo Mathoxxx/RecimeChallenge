@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Recipe Request Data Transfer Object
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,5 +20,4 @@ public class RecipeRequestDTO {
     private Integer servings;
     private List<RecipeIngredientDTO> ingredients;
     private String instructions;
-    //TODO: falta foto
 }

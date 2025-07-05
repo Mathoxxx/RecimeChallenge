@@ -89,7 +89,6 @@ public class RecipeServiceImpl implements RecipeService {
     public Optional<RecipeDTO> getRecipeById(Long id) {
         Optional<Recipe> recipe = recipeRepository.findById(id);
         return recipe.map(recipeMapper::toDTO);
-        //TODO THROW A 404 WHEN NO RECIPE IS FOUND
     }
 
     /**
@@ -102,9 +101,7 @@ public class RecipeServiceImpl implements RecipeService {
     public RecipeDTO updateRecipe(Long id, RecipeRequestDTO recipeDTO) {
         Recipe existingRecipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not found, id: " + id));
-        //TODO THROW A 404 WHEN NO RECIPE IS FOUND
 
-        // Replace all fields
         existingRecipe.setName(recipeDTO.getName());
         existingRecipe.setServings(recipeDTO.getServings());
         existingRecipe.setInstructions(recipeDTO.getInstructions());
@@ -196,7 +193,7 @@ public class RecipeServiceImpl implements RecipeService {
         if (excludeIngredientIds == null || excludeIngredientIds.isEmpty()) return true;
 
         Set<Long> ingredientIds = recipe.getIngredients().stream()
-                .map(ri -> ri.getIngredient().getId())  // Assuming Ingredient has getId() method
+                .map(ri -> ri.getIngredient().getId())
                 .collect(Collectors.toSet());
 
         return Collections.disjoint(ingredientIds, excludeIngredientIds);
